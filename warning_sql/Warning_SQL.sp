@@ -14,7 +14,7 @@ new Ban_type = 1; // 1 = 소스밴 사용자 및 일반 밴 사용자는 0 = 소
  제작; 타이가
 */
 
-// 0.9h에서 Duplicate Error 해결.
+// 0.92h에서 Duplicate Error 해결.
 
 /*
 	어드민 권한
@@ -42,7 +42,7 @@ public Plugin:myinfo =
 	name = "경고 플러그인 For Taiga",
 	author = "타이가",
 	description = "SQL BAN",
-	version = "0.9h",
+	version = "0.92h",
 	url = "http://cafe.naver.com/taigarpg"	
 };
 
