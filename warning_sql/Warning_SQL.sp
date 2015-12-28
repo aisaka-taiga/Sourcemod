@@ -14,7 +14,7 @@ new Ban_type = 1; // 1 = 소스밴 사용자 및 일반 밴 사용자는 0 = 소
  제작; 타이가
 */
 
-// 0.92h에서 Duplicate Error 해결.
+// 0.9h에서 Duplicate Error 해결.
 
 /*
 	어드민 권한
@@ -42,7 +42,7 @@ public Plugin:myinfo =
 	name = "경고 플러그인 For Taiga",
 	author = "타이가",
 	description = "SQL BAN",
-	version = "0.92h",
+	version = "0.9h",
 	url = "http://cafe.naver.com/taigarpg"	
 };
 
@@ -75,7 +75,7 @@ public OnClientPutInServer(Client)
 	if(!IsFakeClient(Client))
 	{
 		decl String:SteamID[32], String:Query[128];
-		GetClientAuthString(Client, SteamID, sizeof(SteamID));
+		GetClientAuthId(Client, AuthId_Engine, SteamID, sizeof(SteamID));
 
 		Format(Query, sizeof(Query), "SELECT * FROM SQL_WARNING WHERE SteamID = '%s'", SteamID);
 
@@ -228,10 +228,10 @@ SQL_SaveClientData(Handle:DATABASE, client)
 {
 	if(DATABASE != INVALID_HANDLE)
 	{
-		decl String:Query[512], String:Steamid[32];
-		GetClientAuthString(client, Steamid, sizeof(Steamid));
+		decl String:Query[512], String:SteamID[32];
+		GetClientAuthId(client, AuthId_Engine, SteamID, sizeof(SteamID));
 		
-		Format(Query, 256, "ON DUPLICATE KEY UPDATE SQL_WARNING set Warning_N = %d where steamid = '%s';", Waring_Count[client], Steamid);
+		Format(Query, 256, "UPDATE SQL_WARNING set Warning_N = %d where SteamID = '%s';", Waring_Count[client], SteamID);
 		
 		SQL_TQuery(DATABASE, SQL_CheckError, Query, client, DBPrio_High);
 	}
@@ -244,9 +244,9 @@ public OnClientDisconnect(Client)
 	{
 		decl String:Name[32], String:SteamID[32], String:Query[128];
 		GetClientName(Client, Name, sizeof(Name));
-		GetClientAuthString(Client, SteamID, sizeof(SteamID));
+		GetClientAuthId(Client, AuthId_Engine, SteamID, sizeof(SteamID));
 		
-		Format(Query, sizeof(Query), "ON DUPLICATE KEY UPDATE SQL_WARNING SET Name = '%s' WHERE SteamID = '%s'", Name, SteamID);
+		Format(Query, sizeof(Query), "UPDATE SQL_WARNING SET Name = '%s' WHERE SteamID = '%s'", Name, SteamID);
 		
 		SQL_TQuery(DB, SQL_CheckError, Query, Client, DBPrio_High);
 	}
@@ -262,9 +262,9 @@ public Action:OnChangeName(Handle:Event, const String:Name[], bool:dontBroadcast
 	if(DB != INVALID_HANDLE)
 	{
 		decl String:SteamID[32], String:Query[128];
-		GetClientAuthString(Client, SteamID, sizeof(SteamID));
+		GetClientAuthId(Client, AuthId_Engine, SteamID, sizeof(SteamID));
 		
-		Format(Query, sizeof(Query), "ON DUPLICATE KEY UPDATE SQL_WARNING SET Name = '%s' WHERE SteamID = '%s'", Name, SteamID);
+		Format(Query, sizeof(Query), "UPDATE SQL_WARNING SET Name = '%s' WHERE SteamID = '%s'", Name, SteamID);
 		
 		SQL_TQuery(DB, SQL_CheckError, Query, Client, DBPrio_High);
 	}
@@ -326,14 +326,14 @@ public SQL_LoadData(Handle:owner, Handle:handle, const String:error[], any:clien
 		{
 			if(SQL_HasResultSet(handle))
 			{
-				decl String:Steamid[32], String:Check[32];
-				GetClientAuthString(client, Steamid, sizeof(Steamid));
+				decl String:Check[32];
+				GetClientAuthId(client, AuthId_Engine, SteamID, sizeof(SteamID));
 				
 				while(SQL_FetchRow(handle))
 				{
 					SQL_FetchString(handle, 0, Check, sizeof(Check));
 				
-					if(StrEqual(Steamid, Check))
+					if(StrEqual(SteamID, Check))
 					{
 						Waring_Count[client] = SQL_FetchInt(handle, 2);
 					}
@@ -341,7 +341,7 @@ public SQL_LoadData(Handle:owner, Handle:handle, const String:error[], any:clien
 			}
 		}
 		else if(!SQL_GetRowCount(handle))
-		GetClientAuthString(client, SteamID, sizeof(SteamID));
+		GetClientAuthId(client, AuthId_Engine, SteamID, sizeof(SteamID));
 			
 		Format(Query, sizeof(Query), "INSERT INTO SQL_WARNING (SteamID, Name, Warning_N) VALUES ('%s', '%s', 0) ON DUPLICATE KEY UPDATE SteamID = '%s'",SteamID, Name);
 			
