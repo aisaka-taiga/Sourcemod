@@ -4,7 +4,7 @@ Sourcemod를 지원하는 모든 게임에서 지원합니다.
 소스밴 목록에도 추가가 자동적으로 됩니다.
 
 #사용법
-사용법: databases.cfg파일에서 
+사용법: sourcemod\configs\databases.cfg파일에서 
 ```C
 "superban"
  {
