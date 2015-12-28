@@ -1,4 +1,3 @@
-
 #include <sourcemod>
 #include <sdktools>
 
@@ -14,6 +13,8 @@ new Ban_type = 1; // 1 = 소스밴 사용자 및 일반 밴 사용자는 0 = 소
  아이디어: 샌박
  제작; 타이가
 */
+
+// 0.9h에서 Duplicate Error 해결.
 
 /*
 	어드민 권한
@@ -41,7 +42,7 @@ public Plugin:myinfo =
 	name = "경고 플러그인 For Taiga",
 	author = "타이가",
 	description = "SQL BAN",
-	version = "0.8h",
+	version = "0.9h",
 	url = "http://cafe.naver.com/taigarpg"	
 };
 
@@ -230,7 +231,7 @@ SQL_SaveClientData(Handle:DATABASE, client)
 		decl String:Query[512], String:Steamid[32];
 		GetClientAuthString(client, Steamid, sizeof(Steamid));
 		
-		Format(Query, 256, "update SQL_WARNING set Warning_N = %d where steamid = '%s';", Waring_Count[client], Steamid);
+		Format(Query, 256, "ON DUPLICATE KEY UPDATE SQL_WARNING set Warning_N = %d where steamid = '%s';", Waring_Count[client], Steamid);
 		
 		SQL_TQuery(DATABASE, SQL_CheckError, Query, client, DBPrio_High);
 	}
@@ -245,7 +246,7 @@ public OnClientDisconnect(Client)
 		GetClientName(Client, Name, sizeof(Name));
 		GetClientAuthString(Client, SteamID, sizeof(SteamID));
 		
-		Format(Query, sizeof(Query), "UPDATE SQL_WARNING SET Name = '%s' WHERE SteamID = '%s'", Name, SteamID);
+		Format(Query, sizeof(Query), "ON DUPLICATE KEY UPDATE SQL_WARNING SET Name = '%s' WHERE SteamID = '%s'", Name, SteamID);
 		
 		SQL_TQuery(DB, SQL_CheckError, Query, Client, DBPrio_High);
 	}
@@ -263,7 +264,7 @@ public Action:OnChangeName(Handle:Event, const String:Name[], bool:dontBroadcast
 		decl String:SteamID[32], String:Query[128];
 		GetClientAuthString(Client, SteamID, sizeof(SteamID));
 		
-		Format(Query, sizeof(Query), "UPDATE SQL_WARNING SET Name = '%s' WHERE SteamID = '%s'", Name, SteamID);
+		Format(Query, sizeof(Query), "ON DUPLICATE KEY UPDATE SQL_WARNING SET Name = '%s' WHERE SteamID = '%s'", Name, SteamID);
 		
 		SQL_TQuery(DB, SQL_CheckError, Query, Client, DBPrio_High);
 	}
@@ -342,7 +343,7 @@ public SQL_LoadData(Handle:owner, Handle:handle, const String:error[], any:clien
 		else if(!SQL_GetRowCount(handle))
 		GetClientAuthString(client, SteamID, sizeof(SteamID));
 			
-		Format(Query, sizeof(Query), "INSERT INTO SQL_WARNING (SteamID, Name, Warning_N) VALUES ('%s', '%s', 0)", SteamID, Name);
+		Format(Query, sizeof(Query), "INSERT INTO SQL_WARNING (SteamID, Name, Warning_N) VALUES ('%s', '%s', 0) ON DUPLICATE KEY UPDATE SteamID = '%s'",SteamID, Name);
 			
 		SQL_TQuery(DB, SQL_CheckError, Query, client, DBPrio_High);
 		}
