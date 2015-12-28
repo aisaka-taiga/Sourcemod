@@ -5,7 +5,7 @@ Sourcemod를 지원하는 모든 게임에서 지원합니다.
 #사용법
 사용법: databases.cfg파일에서 
 ```C
-    "superban"
+"superban"
  {
   "driver"   "default"
   "host"    "localhost"
