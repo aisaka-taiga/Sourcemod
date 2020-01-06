@@ -1,0 +1,10 @@
+new Teleport_Mother = 0;
+new Zombie_Select_Time;
+new Zombie_Select_Number;
+new zombie_appear = 0;
+new Mother_Zombie_Player[MAXPLAYERS+1] = 0;
+new Float:zombie_abs[MAXPLAYERS+1][3];
+new Handle:Zombie_Count_Timer;
+new Handle:Ready_Timer_end;
+new AliveCT;
+new ZSPAWN_USE[MAXPLAYERS+1] = 0;
