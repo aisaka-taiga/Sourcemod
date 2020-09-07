@@ -21,7 +21,7 @@ public OnPluginStart()
 	RegAdminCmd("sm_ter", Command_Move1, ADMFLAG_GENERIC, "플레이어를 테러팀으로 이동시킵니다");	
 	RegAdminCmd("sm_cont", Command_Move2, ADMFLAG_GENERIC, "플레이어를 대테러팀으로 이동시킵니다");	
 	RegAdminCmd("sm_respawn", Command_respawn, ADMFLAG_GENERIC, "플레이어를 부활 시킵니다");	
-	RegAdminCmd("sm_hp", Command_hpup, ADMFLAG_GENERIC, "플레이어를 부활 시킵니다");	
+	RegAdminCmd("sm_hp", Command_hpup, ADMFLAG_GENERIC, "플레이어의 체력을 바꿉니다");	
 }
 //
 public Action:Command_Move(client, args)
